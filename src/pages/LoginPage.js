@@ -1,27 +1,47 @@
 import { useState } from "react"
 import { useAddUserMutation, useFetchUserQuery } from "../store";
 import { v4 as uuidv4 } from 'uuid';
-
+import axios from "axios";
 
 function LoginPage(props){
    const [username,setUsername]=useState('');
    const [password,setPassword]=useState('');
    const [register,setRegister]=useState(true);
    const [isSeller,setIsSeller]=useState('Sell Online');
-   
-   const [addUser,results]=useAddUserMutation();
-   const {data,error,isFetching}=useFetchUserQuery([username,password]);
+   const [user,setuser] = useState([]);
+
+  //  const [addUser,results]=useAddUserMutation();
+
+  //  const {data,error,isFetching}=useFetchUserQuery(user);
 
    const handleAddUser=(event)=>{
-      if(!register){
-        addUser([username,password,isSeller,uuidv4()]);
-        event.preventDefault();
-        console.log(results);
-      }else{
-         console.log(data);
-      }
+    event.preventDefault();
+      
    }
    const handleLogin=()=>{
+      axios({
+        method:'POST',
+        data:{
+          username:username,
+          password:password,
+          type:isSeller
+        },
+        withCredentials:true,
+        url:'http://localhost:4000/login'
+      })
+      .then((res)=>{
+          console.log(res);  //data: "Success Autheticated"
+          if(res.data==="Success Autheticated"){
+              props.nav('/myshop')
+          }
+          else{
+            setuser(res.data); 
+          }
+          // console.log(res.data.Access);
+      }
+      ) 
+   }
+   const HandleClickToRedirect=()=>{
     props.nav('/createshop');
    }
 
@@ -81,21 +101,23 @@ function LoginPage(props){
                       >
                         Log in
                       </button>}
-                      {!register && <button
+                      {/* {!register && <button
                         className="bg-gradient-to-r from-[#ee7724] via-[#d8363a]  to-[#b44593] inline-block px-6 py-2.5 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out w-full mb-3"
                         type="button"
                         data-mdb-ripple="true"
                         data-mdb-ripple-color="light"
+            
                       >
                         Register
-                      </button>}
+                      </button>} */}
+                      <p className="text-red-500 text-xs italic">{user}</p>
                       <a className="text-gray-500" href="#!">Forgot password?</a>
                     </div>
                     <div className="flex items-center justify-between pb-6">
                       <p className="mb-0 mr-2">Don't have an account?</p>
                       <button
                         type="button"
-                        onClick={(e)=>setRegister(!register)}
+                        onClick={HandleClickToRedirect}
                         className="inline-block px-6 py-2 border-2 border-red-600 text-red-600 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
                         data-mdb-ripple="true"
                         data-mdb-ripple-color="light"

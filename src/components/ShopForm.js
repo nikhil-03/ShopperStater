@@ -3,7 +3,8 @@ import { useThunk } from "../hooks/use-thunk";
 import { addShop, fetchShops } from "../store";
 import axios from "axios";
 
-function ShopForm(){
+
+function ShopForm(props){
    
 //    const [doFetchShops,isLoadingShops,loadingShopsError]=useThunk(fetchShops);
    const [doCreateShop,isCreatingShop,creatingShopError]=useThunk(addShop);
@@ -17,14 +18,17 @@ function ShopForm(){
    const [district,setDistrict]=useState('');
    const [state,setState]=useState('');
    const [namear,setnamear]=useState([]);
+   const [email,setEmail]=useState('');
+   const [password,setPassword]=useState('');
 
    const handleShopAdd=(event)=>{
        event.preventDefault();
-       doCreateShop({name,address,mobile,lat,long,pincode,nameofplace,district,state})
+       doCreateShop({email,password,name,address,mobile,lat,long,pincode,nameofplace,district,state})
        setName('');
        setAddress('');
        setMobile('');
        setLat(''); setLong('');
+       props.nav('/login');
    }
    const showposition=(position)=>{
       setLat(position.coords.latitude);
@@ -101,6 +105,24 @@ function ShopForm(){
             </select> 
            </div>
           </div>
+
+          <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+            <label className="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2">
+              email
+            </label>
+            <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-6 leading-tight focus:outline-none focus:bg-white" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+            <p className="text-red-500 text-xs italic">Please fill out this field.</p>
+            </div>
+            <div className="w-full md:w-1/2 px-3">
+              <label className="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2">
+                password
+              </label>
+              <input type="password" className="appearance-none block w-full bg-gray-200 text-gray-700 border border-red-500 rounded py-3 px-4 mb-6 leading-tight focus:outline-none focus:bg-white" value={password} onChange={(e)=>setPassword(e.target.value)}/>
+            <p className="text-red-500 text-xs italic">Please fill out this field.</p>
+           </div>
+          </div>
+
           <div className="flex flex-wrap -mx-3 mb-6">
             <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
             <label className="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2">
@@ -145,10 +167,9 @@ function ShopForm(){
             <select placeholder="Enter pincode first" onClick={getDetails} onChange={handlePlaceName} className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
             {
               namear.map((option,ind) => (
-              <option key={ind} value={ind}>{option}</option>
+                <option key={ind} value={ind}>{option}</option>
             ))}
             </select> 
-            {/* <input onClick={getDetails} onChange={handlePlaceName} value={nameofplace} className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder="Enter Here..."/> */}
            </div>
            <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
              <label className="block uppercase tracking-wide text-gray-50 text-lg font-bold mb-2">

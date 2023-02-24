@@ -27,20 +27,16 @@ const userApi = createApi({
                }
             }),
             fetchUser:builder.query({
-                providesTags:(result,error,user)=>{
-                    const tags = result.map(album=>{
-                        return {type:'Album',id:album.id}
-                    });
-                    return tags;
-                },
                 query:(user)=>{
+                    console.log(user);
                     return {
                         url:'/user',
+                        params:{
+                            userid:user.id,
+                            type:user.type
+                         },
                         method:'GET',
-                        body:{
-                           userid:user.id,
-                           type:user.type
-                        },
+                        
                     }
                 }
             })
